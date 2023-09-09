@@ -1,29 +1,27 @@
-// import { useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { getTrendingMovies } from 'services/getMovies';
+import MovieList from 'components/MovieList/MovieList';
 
 const HomePage = () => {
-  //HTTP запит при монтуванні
-  // useEffect(() => {
-  // HTTP request
-  // }, []);
+  const [trendingMovies, setTrendingMovies] = useState([]);
 
-  //стейт
-  // рендерим коллекцию фильмов
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const trendingMovies = await getTrendingMovies();
+        setTrendingMovies(trendingMovies);
+      } catch (error) {
+        console.log(error);
+      }
+    };
 
-  const movies = ['Movie-1', 'Movie-2', 'Movie-3', 'Movie-4'];
+    fetchData();
+  }, []);
 
   return (
     <div>
-      <h2>Home Page</h2>
-      <ul>
-        {movies.map(movie => {
-          return (
-            <li key={movies.indexOf(movie)}>
-              <Link to={`${movie}`}>{movie}</Link>
-            </li>
-          );
-        })}
-      </ul>
+      <h2>Trending Movies</h2>
+      <MovieList movies={trendingMovies} />
     </div>
   );
 };

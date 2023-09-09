@@ -1,25 +1,46 @@
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { getMovieCast } from 'services/getMovies';
 
 const Cast = () => {
-  // const params = useParams();
-  // console.log('Cast>>>', params);
-
+  const [cast, setCast] = useState([]);
   const { movieId } = useParams();
 
-  //HTTP запит при монтуванні
-  // Берем movieId (Id фильма и делаем запрос по конкретному фільму)
-  // записіваем то что нужно в стейт и рендерим
-  // useEffect(() => {
-  // HTTP request
-  // }, []);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const resp = await getMovieCast(movieId);
+        setCast(resp);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchData();
+  }, [movieId]);
 
   return (
-    <>
-      <h2>Cast for {movieId}</h2>
-      <div>Actor photo</div>
-      <p>Actor Name</p>
-      <p>Character</p>
-    </>
+    <ul>
+      {cast.length !== 0 && (
+        <div>
+          <h2>Cast</h2>
+          {cast.map(el => {
+            return (
+              <li key={el.id}>
+                {el.profile_path && (
+                  <img
+                    src={`https://image.tmdb.org/t/p/w200${el.profile_path}`}
+                    alt=""
+                  />
+                )}
+                <p>{el.name}</p>
+                <p>Character: {el.character}</p>
+              </li>
+            );
+          })}
+        </div>
+      )}
+    </ul>
   );
 };
 

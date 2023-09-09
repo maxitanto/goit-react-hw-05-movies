@@ -1,23 +1,54 @@
-import { Link, Outlet, useParams } from 'react-router-dom';
+import { useRef } from 'react';
+import { useEffect, useState } from 'react';
+import { Link, Outlet, useLocation, useParams } from 'react-router-dom';
+import { getDetailsMovies } from 'services/getMovies';
 
 const MovieDetails = () => {
-  // const params = useParams();
-  // console.log(params)
-
   const { movieId } = useParams();
+  const location = useLocation();
+  const backLinkLocationRef = useRef(location.state?.from ?? '/movies');
 
-  //HTTP запит при монтуванні
-  // Берем movieId (Id фильма и делаем запрос по конкретному фільму)
-  // записіваем то что нужно в стейт и зендерим
-  // useEffect(() => {
-  // HTTP request
-  // }, []);
+  const [movieDetails, setMovieDetails] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const movieData = await getDetailsMovies(`${movieId}`);
+        setMovieDetails(movieData);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchData();
+  }, [movieId]);
+
+  <p></p>;
+  const {
+    poster_path,
+    original_title,
+    release_date,
+    vote_average,
+    overview,
+    genres,
+  } = movieDetails;
+  const releaseYear = release_date?.split('-')[0];
 
   return (
     <>
-      <h2>Movie Details</h2>
-      <div>Poster</div>
-      <h3>Film name: {movieId}</h3>
+      <Link to={backLinkLocationRef.current}>Go back</Link>
+      <div>
+        {poster_path && (
+          <img src={`https://image.tmdb.org/t/p/w400${poster_path}`} alt="" />
+        )}
+      </div>
+      <h2>{`${original_title} (${releaseYear})`}</h2>
+      <p>User Score: {(vote_average * 10).toFixed(2)} % </p>
+      <h3>Overview</h3>
+      <p>{overview}</p>
+      <h3>Genres</h3>
+      <p>{genres?.map(el => el.name).join(', ')}</p>
+      <p>Additional information</p>
       <ul>
         <li>
           <Link to="cast">Cast</Link>
