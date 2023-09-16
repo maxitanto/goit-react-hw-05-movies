@@ -30,6 +30,6 @@ export const getMovieReviews = async id => {
 };
 
 export const getSearchMovie = async filmName => {
-  const response = await axios.get(`/search/movie?${filmName}`, params);
+  const response = await axios.get(`/search/movie?query=${filmName}`, params);
   return response.data.results;
 };
