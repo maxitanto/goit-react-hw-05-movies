@@ -22,11 +22,13 @@ const Cast = () => {
   }, [movieId]);
 
   return (
-    <List>
-      {cast.length !== 0 && (
-        <div>
-          <h2>Cast</h2>
-          {cast.map(({ id, profile_path, name, character }) => {
+    <>
+      <h2>Cast</h2>
+      <List>
+        {cast.length === 0 ? (
+          <p>We don't have any cast for this movie.</p>
+        ) : (
+          cast.map(({ id, profile_path, name, character }) => {
             return (
               <ListItem key={id}>
                 <img
@@ -43,10 +45,10 @@ const Cast = () => {
                 </CastInfo>
               </ListItem>
             );
-          })}
-        </div>
-      )}
-    </List>
+          })
+        )}
+      </List>
+    </>
   );
 };
 
